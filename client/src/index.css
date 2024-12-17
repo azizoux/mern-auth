@@ -1,0 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@900&family=Prata&display=swap");
+* {
+  font-family: "Outfit", serif;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
