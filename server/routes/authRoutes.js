@@ -18,7 +18,7 @@ authRouter.post("/login", login);
 authRouter.post("/logout", logout);
 authRouter.post("/send-verify-otp", userAuth, sendVerifyOtp);
 authRouter.post("/verify-account", userAuth, verifyEmail);
-authRouter.post("/is-auth", userAuth, isAutenticated);
+authRouter.get("/is-auth", userAuth, isAutenticated);
 authRouter.post("/send-reset-otp", sendResetOtp);
 authRouter.post("/reset-password", resetPassword);
 
