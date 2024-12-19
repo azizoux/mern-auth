@@ -2,6 +2,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodemailer.js";
+import {
+  EMAIL_VERIFY_TEMPLATE,
+  PASSWORD_RESET_TEMPLATE,
+} from "../config/emailTemplate.js";
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -102,7 +106,11 @@ export const sendVerifyOtp = async (req, res) => {
       from: process.env.SENDER_EMAIL,
       to: user.email,
       subject: "Account Verification OTP",
-      text: `Your OTP is ${otp}. Please verify your account using this OTP. `,
+      // text: `Your OTP is ${otp}. Please verify your account using this OTP. `,
+      html: EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace(
+        "{{email}}",
+        user.email
+      ),
     };
     await transporter.sendMail(mailOptions);
     return res.json({ success: true, message: "Verication OTP sent on Email" });
@@ -163,7 +171,7 @@ export const sendResetOtp = async (req, res) => {
     if (!user) {
       return res.json({ success: false, message: "User not found" });
     }
-    const otp = String(Math.floor(10000 + Math.random() * 900000));
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
     user.resetOtp = otp;
     user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000;
     user.save();
@@ -171,7 +179,11 @@ export const sendResetOtp = async (req, res) => {
       from: process.env.SENDER_EMAIL,
       to: user.email,
       subject: "Password Reset OTP",
-      text: `Your OTP for Resetting your Password is ${otp}. Please use this OTP to reset Password. `,
+      // text: `Your OTP for Resetting your Password is ${otp}. Please use this OTP to reset Password. `,
+      html: PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp).replace(
+        "{{email}}",
+        user.email
+      ),
     };
     await transporter.sendMail(mailOptions);
     return res.json({
